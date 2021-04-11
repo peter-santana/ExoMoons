@@ -1,6 +1,7 @@
 # Simulation of an exomoon around a gaint planet in an eccentric orbit
 # Function returns orbit data for star, planet, and moon. 
 # PHL @ UPR Arecibo
+# Uses REBOUND: https://github.com/hannorein/rebound
 
 import rebound
 import numpy as np
@@ -46,7 +47,7 @@ def exomoon_orbit1(mass_star = 1.0, mass_planet = 1.0, a_planet = 1.0,
     sim = rebound.Simulation()
 
     sim.integrator = 'ias15' # orbit integrator
-    sim.dt = 1e-3 # time step
+    sim.dt = 0.1 # time step
 
     m_star = mass_star
     m_planet = mass_planet*mass_jupiter
@@ -68,7 +69,7 @@ def exomoon_orbit1(mass_star = 1.0, mass_planet = 1.0, a_planet = 1.0,
     sim.move_to_com() # move coordinates to center of mass
 
     print('-' * (4*15+3))
-    print('%15s %15s %15s %15s' % ('Orbit', 'Time (yr)', 'a (AU)', 'd (LD)' ))
+    print('%15s %15s %15s %15s' % ('Orbit', 'Time (yrs)', 'a (AU)', 'd (LD)' ))
     print('-' * (4*15+3))
     
     for i, time in enumerate(times):
@@ -83,9 +84,9 @@ def exomoon_orbit1(mass_star = 1.0, mass_planet = 1.0, a_planet = 1.0,
         data.ys[i] = sim.particles['star'].y
         data.d[i] = np.sqrt((data.x[i]-data.xp[i])**2+(data.y[i]-data.yp[i])**2)/r_earth_moon
         if ((i/(n/10)) % 1) == 0:
-            print('%15i %15i %15.1f %15.1f' % (i,times[i]/(2*np.pi),data.a[i],data.d[i]))
+            print('%15i %15i %15.2f %15.2f' % (i / n_points_orbit,times[i]/(2*np.pi),data.a[i],data.d[i]))
 
-    print('%15i %15i %15.1f %15.1f' % (n_orbits,times[i]/(2*np.pi),data.a[i],data.d[i]))
+    print('%15i %15i %15.2f %15.2f' % (n_orbits,times[i]/(2*np.pi),data.a[i],data.d[i]))
     print('-' * (4*15+3))
     
     # converted to eart-moon distance
